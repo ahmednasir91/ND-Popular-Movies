@@ -1,5 +1,6 @@
 package com.ahmed.popularmovies.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,7 +36,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final String SELECTED_LIST = "com.ahmed.popularmovies.key.SELECTED_LIST";
     private static final String POPULAR_MOVIES_TAG = "popular-movies";
     private static final String TOP_RATED_MOVIES_TAG = "top-rated-movies";
-    private static final String EXTRA_MOVIE = "com.ahmed.popularmovies.extra.MOVIE";
+
+
+    public static final String EXTRA_MOVIE = "com.ahmed.popularmovies.extra.MOVIE";
+    public static final String THE_MOVIE_DB_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185/";
 
     private TheMovieDBGateway mTheMovieDBGateway;
     private MovieAdapter mMovieAdapter;
@@ -163,5 +167,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
         intent.putExtra(EXTRA_MOVIE, movieList.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    protected void onChildTitleChanged(Activity childActivity, CharSequence title) {
+        super.onChildTitleChanged(childActivity, title);
+        setTitle(title);
     }
 }

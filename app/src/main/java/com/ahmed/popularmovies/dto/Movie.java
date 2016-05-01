@@ -3,6 +3,10 @@ package com.ahmed.popularmovies.dto;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Ahmed.
@@ -82,5 +86,18 @@ public class Movie implements Serializable {
 
     public String posterUrl(String baseUrl) {
         return baseUrl + posterPath;
+    }
+
+    public String getReleaseDateFormatted() {
+        try {
+            SimpleDateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            SimpleDateFormat outFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
+
+            Date releaseDateObj = inFormat.parse(releaseDate);
+
+            return outFormat.format(releaseDateObj);
+        } catch (ParseException e) {
+            return releaseDate;
+        }
     }
 }

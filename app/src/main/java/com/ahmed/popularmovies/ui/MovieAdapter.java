@@ -16,8 +16,6 @@ import java.util.List;
  */
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
-    private static final String THE_MOVIE_DB_BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185/";
-
     public MovieAdapter(Context context, List<Movie> items) {
         super(context, 0, items);
     }
@@ -32,9 +30,8 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             imageView = (ImageView) convertView;
         }
 
-        Picasso
-                .with(getContext())
-                .load(getItem(position).posterUrl(THE_MOVIE_DB_BASE_IMAGE_URL))
+        Picasso.with(getContext())
+                .load(getItem(position).posterUrl(MainActivity.THE_MOVIE_DB_BASE_IMAGE_URL))
                 .resize(450, 450)
                 .into(imageView);
 
