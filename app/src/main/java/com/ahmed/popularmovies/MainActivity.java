@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TheMovieDBGateway mTheMovieDBGateway;
     private MovieAdapter mMovieAdapter;
     private List<Movie> movieList;
-
+    private String currentList = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +90,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showTopRatedMovies() {
+        currentList = "top-rated-movies";
+
         Call<Response<List<Movie>>> responseCall = mTheMovieDBGateway.topRatedMovies(API_KEY);
         responseCall.enqueue(movieListDownloadedCallback);
     }
 
     private void showPopularMovies() {
+        currentList = "popular-movies";
+
         Call<Response<List<Movie>>> responseCall = mTheMovieDBGateway.popularMovies(API_KEY);
         responseCall.enqueue(movieListDownloadedCallback);
     }
