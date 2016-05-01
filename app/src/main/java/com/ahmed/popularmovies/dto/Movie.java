@@ -2,10 +2,13 @@ package com.ahmed.popularmovies.dto;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Ahmed.
  */
-public class Movie {
+public class Movie implements Serializable {
+
     private int id;
     @SerializedName("original_title")
     private String originalTitle;

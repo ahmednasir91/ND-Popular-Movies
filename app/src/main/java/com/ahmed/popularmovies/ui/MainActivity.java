@@ -1,18 +1,22 @@
-package com.ahmed.popularmovies;
+package com.ahmed.popularmovies.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.ahmed.popularmovies.BuildConfig;
+import com.ahmed.popularmovies.R;
 import com.ahmed.popularmovies.dto.Movie;
 import com.ahmed.popularmovies.dto.Response;
 import com.ahmed.popularmovies.network.TheMovieDBGateway;
-import com.ahmed.popularmovies.ui.MovieAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +26,16 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private static final String THE_MOVIE_DB_URL = "http://api.themoviedb.org/";
     private static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY; // Add API Key here
 
     private static final String TAG = MainActivity.class.getName();
+    private static final String SELECTED_LIST = "com.ahmed.popularmovies.key.SELECTED_LIST";
+    private static final String POPULAR_MOVIES_TAG = "popular-movies";
+    private static final String TOP_RATED_MOVIES_TAG = "top-rated-movies";
+    private static final String EXTRA_MOVIE = "com.ahmed.popularmovies.extra.MOVIE";
 
     private TheMovieDBGateway mTheMovieDBGateway;
     private MovieAdapter mMovieAdapter;
@@ -39,11 +47,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        restoreState(savedInstanceState);
+
         initGateway();
 
-        showPopularMovies();
+        loadMovies();
 
         initUI();
+    }
+
+    private void restoreState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            currentList = savedInstanceState.getString(SELECTED_LIST);
+        }
+    }
+
+    private void loadMovies() {
+        if (TOP_RATED_MOVIES_TAG.equalsIgnoreCase(currentList)) {
+            showTopRatedMovies();
+        } else {
+            showPopularMovies();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(SELECTED_LIST, currentList);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        currentList = savedInstanceState.getString(SELECTED_LIST);
+
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initUI() {
@@ -52,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         GridView moviesGV = ((GridView) findViewById(R.id.movies_gv));
         moviesGV.setAdapter(mMovieAdapter);
+
+        moviesGV.setOnItemClickListener(MainActivity.this);
     }
 
     private void showMoviesList(List<Movie> movies) {
@@ -90,14 +130,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showTopRatedMovies() {
-        currentList = "top-rated-movies";
+        currentList = TOP_RATED_MOVIES_TAG;
 
         Call<Response<List<Movie>>> responseCall = mTheMovieDBGateway.topRatedMovies(API_KEY);
         responseCall.enqueue(movieListDownloadedCallback);
     }
 
     private void showPopularMovies() {
-        currentList = "popular-movies";
+        currentList = POPULAR_MOVIES_TAG;
 
         Call<Response<List<Movie>>> responseCall = mTheMovieDBGateway.popularMovies(API_KEY);
         responseCall.enqueue(movieListDownloadedCallback);
@@ -117,4 +157,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "An error occured downloading list.", Toast.LENGTH_LONG).show();
         }
     };
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
+        intent.putExtra(EXTRA_MOVIE, movieList.get(position));
+        startActivity(intent);
+    }
 }
