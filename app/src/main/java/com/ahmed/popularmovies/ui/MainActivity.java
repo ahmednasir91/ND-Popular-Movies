@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -22,12 +20,15 @@ import com.ahmed.popularmovies.network.TheMovieDBGateway;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String THE_MOVIE_DB_URL = "http://api.themoviedb.org/";
     private static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY; // Add API Key here
@@ -46,10 +47,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<Movie> movieList;
     private String currentList = "";
 
+    @BindView(R.id.movies_gv)
+    GridView moviesGV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
 
         restoreState(savedInstanceState);
 
@@ -92,10 +98,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         movieList = new ArrayList<>(0);
         mMovieAdapter = new MovieAdapter(MainActivity.this, movieList);
 
-        GridView moviesGV = ((GridView) findViewById(R.id.movies_gv));
         moviesGV.setAdapter(mMovieAdapter);
 
-        moviesGV.setOnItemClickListener(MainActivity.this);
     }
 
     private void showMoviesList(List<Movie> movies) {
@@ -171,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(MainActivity.this, "An error occured downloading list.", Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @OnItemClick(R.id.movies_gv)
+    public void onMovieItemClick(int position) {
         Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
         intent.putExtra(EXTRA_MOVIE, movieList.get(position));
         startActivity(intent);

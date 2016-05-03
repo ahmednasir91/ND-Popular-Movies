@@ -9,14 +9,32 @@ import com.ahmed.popularmovies.R;
 import com.ahmed.popularmovies.dto.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     private Movie mCurrentMovie;
+
+    @BindView(R.id.average_rating)
+    TextView mAverageRatingTV;
+
+    @BindView(R.id.synopsis)
+    TextView mSynopsisTV;
+
+    @BindView(R.id.release_date)
+    TextView mReleaseDateTV;
+
+    @BindView(R.id.movie_poster_iv)
+    ImageView mMoviePosterIV;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        ButterKnife.bind(this);
 
         restoreState(savedInstanceState);
 
@@ -29,11 +47,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(MovieDetailActivity.this)
                 .load(mCurrentMovie.posterUrl(MainActivity.THE_MOVIE_DB_BASE_IMAGE_URL))
                 .resize(450, 450)
-                .into((ImageView) findViewById(R.id.movie_poster_iv));
+                .error(R.drawable.imageNotFound)
+                .into(mMoviePosterIV);
 
-        ((TextView) findViewById(R.id.average_rating)).setText(String.format("%s/10", mCurrentMovie.getVoteAverage()));
-        ((TextView) findViewById(R.id.synopsis)).setText(mCurrentMovie.getOverview());
-        ((TextView) findViewById(R.id.release_date)).setText(mCurrentMovie.getReleaseDateFormatted());
+        mAverageRatingTV.setText(String.format("%s/10", mCurrentMovie.getVoteAverage()));
+        mSynopsisTV.setText(mCurrentMovie.getOverview());
+        mReleaseDateTV.setText(mCurrentMovie.getReleaseDateFormatted());
     }
 
     private void restoreState(Bundle savedInstanceState) {
