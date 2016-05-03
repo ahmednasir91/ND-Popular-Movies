@@ -47,7 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(MovieDetailActivity.this)
                 .load(mCurrentMovie.posterUrl(MainActivity.THE_MOVIE_DB_BASE_IMAGE_URL))
                 .resize(450, 450)
-                .error(R.drawable.imageNotFound)
+                .error(R.drawable.image_not_found)
                 .into(mMoviePosterIV);
 
         mAverageRatingTV.setText(String.format("%s/10", mCurrentMovie.getVoteAverage()));
