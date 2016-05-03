@@ -150,17 +150,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Callback<Response<List<Movie>>> movieListDownloadedCallback = new Callback<Response<List<Movie>>>() {
         @Override
         public void onResponse(Call<Response<List<Movie>>> call, retrofit2.Response<Response<List<Movie>>> response) {
-            showMoviesList(response.body().getResults());
+            if (response.isSuccessful()) {
+                showMoviesList(response.body().getResults());
 
-            Log.i(TAG, "Done");
+                Log.i(TAG, "Done");
+            } else  {
+                failedDownloadingMoviesList();
+            }
+
         }
 
         @Override
         public void onFailure(Call<Response<List<Movie>>> call, Throwable t) {
-            Log.e(TAG, "There was an error downloading movies list.");
-            Toast.makeText(MainActivity.this, "An error occured downloading list.", Toast.LENGTH_LONG).show();
+            failedDownloadingMoviesList();
         }
     };
+
+    private void failedDownloadingMoviesList() {
+        Log.e(TAG, "There was an error downloading movies list.");
+        Toast.makeText(MainActivity.this, "An error occured downloading list.", Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
