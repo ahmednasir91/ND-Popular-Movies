@@ -57,7 +57,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void restoreState(Bundle savedInstanceState) {
         if (getIntent().hasExtra(MainActivity.EXTRA_MOVIE)) {
-            mCurrentMovie = (Movie) getIntent().getSerializableExtra(MainActivity.EXTRA_MOVIE);
+            mCurrentMovie = getIntent().getParcelableExtra(MainActivity.EXTRA_MOVIE);
         } else {
             mCurrentMovie = (Movie) savedInstanceState.getSerializable(MainActivity.EXTRA_MOVIE);
         }
